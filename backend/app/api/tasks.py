@@ -311,15 +311,13 @@ async def moderate_task(
             meta={"task_id": task.id, "amount": float(campaign.price_per_task)},
         )
     else:
-        task.status = TaskStatus.rejected
-        report.client_confirmed = False
-        report.rejection_reason = rejection_reason
-
-        # Освобождаем задание
+        # Возвращаем задание в пул — другой исполнитель сможет его взять
+        task.status = TaskStatus.available
         task.executor_id = None
         task.accepted_at = None
         task.deadline_at = None
-        # Не удаляем отчёт — оставляем историю
+        # Удаляем отчёт, чтобы новый исполнитель мог загрузить фото
+        await db.delete(report)
 
         # Уведомление исполнителю
         notif = Notification(

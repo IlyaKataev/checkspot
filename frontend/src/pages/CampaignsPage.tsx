@@ -125,7 +125,7 @@ function CampaignCard({
           { label: 'Всего', value: c.total_tasks, cls: 'bg-gray-50' },
           { label: 'Выполнено', value: c.completed_tasks, cls: 'bg-green-50 text-green-700' },
           { label: 'В работе', value: c.in_progress_tasks + c.pending_tasks, cls: 'bg-yellow-50 text-yellow-700' },
-          { label: 'Отклонено', value: c.rejected_tasks, cls: 'bg-red-50 text-red-700' },
+          { label: 'Осталось', value: c.pending_tasks, cls: 'bg-orange-50 text-orange-700' },
         ].map(({ label, value, cls }) => (
           <div key={label} className={`${cls} rounded-lg p-2`}>
             <div className="text-xl font-bold">{value}</div>
