@@ -1,7 +1,7 @@
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -18,8 +18,11 @@ async def lifespan(app: FastAPI):
 
     if settings.WEBHOOK_URL:
         webhook_url = f"{settings.WEBHOOK_URL}/bot/webhook"
-        await bot.set_webhook(webhook_url)
-        print(f"Bot webhook set: {webhook_url}")
+        try:
+            await bot.set_webhook(webhook_url)
+            print(f"Bot webhook set: {webhook_url}")
+        except Exception as e:
+            print(f"Warning: failed to set webhook: {e}")
     else:
         await bot.delete_webhook()
         import asyncio
@@ -66,7 +69,7 @@ app.include_router(admin.router, prefix="/api")
 
 # Telegram webhook endpoint (для продакшена)
 @app.post("/bot/webhook")
-async def bot_webhook(request):
+async def bot_webhook(request: Request):
     from aiogram.types import Update
     from app.bot.setup import bot, dp
     body = await request.body()
