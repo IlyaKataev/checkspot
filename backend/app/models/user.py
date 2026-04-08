@@ -60,6 +60,7 @@ class Executor(Base):
     lat: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
     lng: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
     last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    search_radius_km: Mapped[int] = mapped_column(Integer, default=5, server_default="5")
 
     user: Mapped["User"] = relationship(back_populates="executor")
     tasks: Mapped[list["Task"]] = relationship(back_populates="executor")

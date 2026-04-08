@@ -13,9 +13,18 @@ def main_menu_kb() -> ReplyKeyboardMarkup:
     kb.button(text="🔍 Найти задания")
     kb.button(text="💰 Мой баланс")
     kb.button(text="📋 История")
-    kb.button(text="❓ Поддержка")
+    kb.button(text="⚙️ Настройки")
     kb.adjust(2)
     return kb.as_markup(resize_keyboard=True)
+
+
+def radius_kb(current_km: int) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    for km in [2, 5, 10, 20, 50]:
+        label = f"{'✅ ' if km == current_km else ''}{km} км"
+        builder.button(text=label, callback_data=f"set_radius:{km}")
+    builder.adjust(3)
+    return builder.as_markup()
 
 
 def request_phone_kb() -> ReplyKeyboardMarkup:

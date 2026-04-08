@@ -91,20 +91,23 @@ async def got_location(message: Message, state: FSMContext):
         )
         tasks = result.scalars().all()
 
+    radius_m = (executor.search_radius_km or 5) * 1000 if executor else 5000
+
     nearby = []
     for task in tasks:
         dist = haversine_m(lat, lng, float(task.lat), float(task.lng))
-        if dist <= 2000:
+        if dist <= radius_m:
             nearby.append((task, dist))
 
     nearby.sort(key=lambda x: x[1])
 
     await state.clear()
 
+    radius_km = radius_m // 1000
     if not nearby:
         await message.answer(
-            "😔 Рядом с вами (в радиусе 2 км) нет доступных заданий.\n\n"
-            "Попробуйте позже или переместитесь в другое место.",
+            f"😔 Рядом с вами (в радиусе {radius_km} км) нет доступных заданий.\n\n"
+            "Попробуйте увеличить радиус в ⚙️ Настройках или зайдите позже.",
             reply_markup=main_menu_kb(),
         )
         return
