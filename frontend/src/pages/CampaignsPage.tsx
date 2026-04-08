@@ -35,7 +35,7 @@ export function CampaignsPage() {
     <div className="space-y-6">
       {/* Stats */}
       {campaigns.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           {[
             { label: 'Кампаний', value: campaigns.length, icon: TrendingUp, color: 'blue' },
             { label: 'Точек', value: totalTasks, icon: MapPin, color: 'purple' },
@@ -120,7 +120,7 @@ function CampaignCard({
         </span>
       </div>
 
-      <div className="grid grid-cols-4 gap-3 mb-4 text-center">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-center">
         {[
           { label: 'Всего', value: c.total_tasks, cls: 'bg-gray-50' },
           { label: 'Выполнено', value: c.completed_tasks, cls: 'bg-green-50 text-green-700' },
@@ -149,14 +149,14 @@ function CampaignCard({
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-3 border-t border-gray-100 gap-3">
         <span className="text-sm text-gray-500">
           {c.price_per_task} ₽ / точка ·{' '}
           <span className="font-medium text-gray-900">
             {(c.completed_tasks * c.price_per_task).toLocaleString()} ₽ итого
           </span>
         </span>
-        <div className="flex gap-2">
+        <div className="flex gap-2 shrink-0">
           {c.status === 'draft' && c.total_tasks > 0 && (
             <button
               onClick={onPublish}

@@ -98,7 +98,7 @@ export function NewCampaignPage() {
         <h2 className="text-xl font-bold text-gray-900">Новая кампания</h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-5">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Название кампании <span className="text-red-500">*</span>

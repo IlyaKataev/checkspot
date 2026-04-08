@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
-import { Bell, LogOut, Wallet } from 'lucide-react';
+import { Bell, LogOut, Wallet, LayoutGrid } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../store/auth';
 import { notificationsApi } from '../api/campaigns';
@@ -80,7 +80,7 @@ export function Layout() {
               </button>
 
               {showNotifs && (
-                <div className="absolute right-0 top-10 w-80 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                <div className="absolute right-0 top-10 w-72 sm:w-80 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
                   <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
                     <span className="font-medium text-sm text-gray-900">Уведомления</span>
                     <button
@@ -125,9 +125,31 @@ export function Layout() {
       </header>
 
       {/* Content */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 pb-20 sm:pb-6">
         <Outlet />
       </main>
+
+      {/* Mobile bottom nav */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex z-30">
+        <Link
+          to="/"
+          className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium ${
+            location.pathname === '/' ? 'text-[#0088cc]' : 'text-gray-400'
+          }`}
+        >
+          <LayoutGrid className="w-5 h-5" />
+          Кампании
+        </Link>
+        <Link
+          to="/payouts"
+          className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium ${
+            location.pathname === '/payouts' ? 'text-[#0088cc]' : 'text-gray-400'
+          }`}
+        >
+          <Wallet className="w-5 h-5" />
+          Выплаты
+        </Link>
+      </nav>
     </div>
   );
 }
