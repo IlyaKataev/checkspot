@@ -12,34 +12,36 @@ from app.models import *  # noqa: регистрируем модели
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Запуск
+    import asyncio
     from app.bot.setup import bot, dp, setup_routers
+    from app.services.task_scheduler import scheduler_loop
     setup_routers()
 
-    if settings.WEBHOOK_URL:
-        webhook_url = f"{settings.WEBHOOK_URL}/bot/webhook"
+    async def start_bot():
         try:
-            await bot.set_webhook(webhook_url)
-            print(f"Bot webhook set: {webhook_url}")
+            if settings.WEBHOOK_URL:
+                webhook_url = f"{settings.WEBHOOK_URL}/bot/webhook"
+                await bot.set_webhook(webhook_url)
+                print(f"Bot webhook set: {webhook_url}")
+            else:
+                await bot.delete_webhook()
+                await dp.start_polling(bot, handle_signals=False)
+                print("Bot polling started")
         except Exception as e:
-            print(f"Warning: failed to set webhook: {e}")
-    else:
-        await bot.delete_webhook()
-        import asyncio
-        asyncio.create_task(dp.start_polling(bot, handle_signals=False))
-        print("Bot polling started")
+            print(f"Warning: bot startup error: {e}")
 
-    # Фоновый планировщик: освобождение просроченных заданий
-    import asyncio
-    from app.services.task_scheduler import scheduler_loop
+    asyncio.create_task(start_bot())
     asyncio.create_task(scheduler_loop())
 
     yield
 
     # Завершение
-    if not settings.WEBHOOK_URL:
-        await dp.stop_polling()
-    await bot.session.close()
+    try:
+        if not settings.WEBHOOK_URL:
+            await dp.stop_polling()
+        await bot.session.close()
+    except Exception:
+        pass
 
 
 app = FastAPI(title="CheckSpot API", lifespan=lifespan)
