@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import { Bell, LogOut, Wallet } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../store/auth';
 import { notificationsApi } from '../api/campaigns';
 
@@ -11,10 +11,17 @@ export function Layout() {
   const { name, logout } = useAuthStore();
   const [showNotifs, setShowNotifs] = useState(false);
 
+  const queryClient = useQueryClient();
+
   const { data: notifications = [] } = useQuery({
     queryKey: ['notifications'],
     queryFn: notificationsApi.list,
     refetchInterval: 30_000,
+  });
+
+  const readAllMutation = useMutation({
+    mutationFn: notificationsApi.readAll,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
   });
 
   const unread = notifications.filter((n) => !n.is_read).length;
@@ -78,7 +85,7 @@ export function Layout() {
                     <span className="font-medium text-sm text-gray-900">Уведомления</span>
                     <button
                       onClick={() => {
-                        notificationsApi.readAll();
+                        readAllMutation.mutate();
                         setShowNotifs(false);
                       }}
                       className="text-xs text-[#0088cc] hover:underline"
