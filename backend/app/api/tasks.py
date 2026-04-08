@@ -169,7 +169,6 @@ async def submit_photo(
     if task.status != TaskStatus.in_progress:
         raise HTTPException(status_code=400, detail="Задание не в работе")
 
-    # Сохраняем фото
     os.makedirs(settings.MEDIA_DIR, exist_ok=True)
     ext = os.path.splitext(photo.filename or "photo.jpg")[1] or ".jpg"
     filename = f"{uuid.uuid4()}{ext}"
@@ -178,7 +177,6 @@ async def submit_photo(
     with open(filepath, "wb") as f:
         f.write(content)
 
-    # Создаём отчёт
     report = TaskReport(
         task_id=task.id,
         executor_id=executor.id,
@@ -189,11 +187,9 @@ async def submit_photo(
     )
     db.add(report)
 
-    # Переводим в pending_review (ждёт ручной модерации)
     task.status = TaskStatus.pending_review
     await db.commit()
 
-    # Уведомляем заказчика
     camp_result = await db.execute(
         select(Campaign).where(Campaign.id == task.campaign_id)
     )
@@ -299,7 +295,6 @@ async def moderate_task(
         task.completed_at = now
         report.client_confirmed = True
 
-        # Начисляем исполнителю
         executor.balance = float(executor.balance) + float(campaign.price_per_task)
         executor.completed_tasks += 1
 
@@ -330,7 +325,6 @@ async def moderate_task(
     db.add(notif)
     await db.commit()
 
-    # Отправляем Telegram-сообщение исполнителю
     if executor.user.telegram_id:
         await notify_telegram(executor.user.telegram_id, notif.body)
 

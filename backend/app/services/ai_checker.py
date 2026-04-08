@@ -12,10 +12,8 @@ async def check_photo(photo_path: str, category: str) -> dict:
       {"passed": bool, "is_shelf": bool, "is_clear": bool, "has_category": bool, "reason": str}
     """
     if not settings.AI_MODERATION_ENABLED:
-        # AI отключён — отдаём задание на ручную проверку
         return {"passed": None, "reason": "manual_review"}
 
-    # --- AI через Claude (включается когда AI_MODERATION_ENABLED=true) ---
     import anthropic
     import base64
 

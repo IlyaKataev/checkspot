@@ -35,7 +35,6 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    # Завершение
     try:
         if not settings.WEBHOOK_URL:
             await dp.stop_polling()
@@ -54,11 +53,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Статика (фото)
 os.makedirs(settings.MEDIA_DIR, exist_ok=True)
 app.mount("/media", StaticFiles(directory=settings.MEDIA_DIR), name="media")
 
-# Роуты
 from app.api import auth, campaigns, tasks, executor, notifications, admin
 
 app.include_router(auth.router, prefix="/api")
@@ -69,7 +66,6 @@ app.include_router(notifications.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
 
 
-# Telegram webhook endpoint (для продакшена)
 @app.post("/bot/webhook")
 async def bot_webhook(request: Request):
     from aiogram.types import Update

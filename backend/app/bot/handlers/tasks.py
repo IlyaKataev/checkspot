@@ -149,7 +149,6 @@ async def accept_task(callback: CallbackQuery, state: FSMContext):
             await callback.answer("Задание уже занято", show_alert=True)
             return
 
-        # Проверяем нет ли уже активного задания
         active = await db.execute(
             select(Task).where(
                 Task.executor_id == executor.id,
@@ -226,7 +225,6 @@ async def got_photo(message: Message, state: FSMContext, bot: Bot):
 
     await message.answer("⏳ Получаю фото...", reply_markup=main_menu_kb())
 
-    # Скачиваем фото
     photo: PhotoSize = message.photo[-1]  # берём максимальное качество
     file = await bot.get_file(photo.file_id)
     file_bytes = await bot.download_file(file.file_path)
@@ -250,7 +248,6 @@ async def got_photo(message: Message, state: FSMContext, bot: Bot):
             await state.clear()
             return
 
-        # Проверка таймера
         if task.deadline_at and datetime.now(timezone.utc) > task.deadline_at.replace(tzinfo=timezone.utc):
             task.status = TaskStatus.available
             task.executor_id = None
@@ -265,7 +262,6 @@ async def got_photo(message: Message, state: FSMContext, bot: Bot):
             await state.clear()
             return
 
-        # Сохраняем отчёт
         report = TaskReport(
             task_id=task.id,
             executor_id=executor.id,
@@ -276,7 +272,6 @@ async def got_photo(message: Message, state: FSMContext, bot: Bot):
         task.status = TaskStatus.pending_review
         await db.flush()
 
-        # Уведомляем заказчика
         campaign = task.campaign
         client_res = await db.execute(select(Client).where(Client.id == campaign.client_id))
         client = client_res.scalar_one_or_none()

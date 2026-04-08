@@ -86,7 +86,6 @@ async def agreed(callback: CallbackQuery, state: FSMContext):
 
     tg_user = callback.from_user
     async with AsyncSessionLocal() as db:
-        # Проверяем нет ли уже такого пользователя
         result = await db.execute(select(User).where(User.telegram_id == tg_user.id))
         user = result.scalar_one_or_none()
 

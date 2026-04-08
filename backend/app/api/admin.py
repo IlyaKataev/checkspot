@@ -71,7 +71,6 @@ async def complete_payout(
     payout.completed_at = datetime.now(timezone.utc)
     await db.commit()
 
-    # Уведомляем исполнителя
     if payout.executor and payout.executor.user.telegram_id:
         from app.services.notifier import notify_telegram
         await notify_telegram(
@@ -101,7 +100,6 @@ async def reject_payout(
     payout.status = PayoutStatus.failed
     await db.commit()
 
-    # Возвращаем деньги на баланс исполнителя
     executor = payout.executor
     executor.balance = float(executor.balance) + float(payout.amount)
     await db.commit()
