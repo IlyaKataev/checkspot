@@ -19,4 +19,5 @@ frontend/.env
 # Local dev / internal
 memory/
 DEPLOY.md
+PLAN.md
 retail_audit_app/
