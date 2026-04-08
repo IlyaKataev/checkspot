@@ -1,9 +1,6 @@
-import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import {
-  Plus, TrendingUp, MapPin, CheckCircle, DollarSign, Eye, Send
-} from 'lucide-react';
+import { Plus, Eye, Send } from 'lucide-react';
 import { campaignsApi, Campaign } from '../api/campaigns';
 
 export function CampaignsPage() {
@@ -37,11 +34,11 @@ export function CampaignsPage() {
       {campaigns.length > 0 && (
         <div className="grid grid-cols-2 gap-4">
           {[
-            { label: 'Кампаний', value: campaigns.length, icon: TrendingUp, color: 'blue' },
-            { label: 'Точек', value: totalTasks, icon: MapPin, color: 'purple' },
-            { label: 'Выполнено', value: totalCompleted, icon: CheckCircle, color: 'green' },
-            { label: 'Потрачено', value: `${totalSpent.toLocaleString()} ₽`, icon: DollarSign, color: 'yellow' },
-          ].map(({ label, value, icon: Icon, color }) => (
+            { label: 'Кампаний', value: campaigns.length },
+            { label: 'Точек', value: totalTasks },
+            { label: 'Выполнено', value: totalCompleted },
+            { label: 'Потрачено', value: `${totalSpent.toLocaleString()} ₽` },
+          ].map(({ label, value }) => (
             <div key={label} className="bg-white rounded-xl border border-gray-200 p-5">
               <p className="text-sm text-gray-500">{label}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>

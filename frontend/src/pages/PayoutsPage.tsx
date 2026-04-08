@@ -200,7 +200,7 @@ function PayoutRow({
               className="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1 rounded-lg text-xs font-medium flex items-center gap-1 disabled:opacity-60"
             >
               <CheckCircle className="w-3.5 h-3.5" />
-              Выплачено
+              Выплатить
             </button>
             <button
               onClick={onReject}
