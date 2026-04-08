@@ -47,7 +47,7 @@ async def set_radius(callback: CallbackQuery):
 
     await callback.message.edit_text(
         f"⚙️ <b>Настройки</b>\n\n"
-        f"📏 Радиус поиска установлен: <b>{km} км</b>\n\n"
+        f"📏 Текущий радиус поиска: <b>{km} км</b>\n\n"
         f"Выберите радиус:",
         parse_mode="HTML",
         reply_markup=radius_kb(km),
