@@ -38,6 +38,7 @@ class CampaignOut(BaseModel):
     total_tasks: int = 0
     completed_tasks: int = 0
     pending_tasks: int = 0
+    pending_review_tasks: int = 0
     rejected_tasks: int = 0
     in_progress_tasks: int = 0
 
@@ -57,7 +58,8 @@ def _campaign_out(c: Campaign, tasks: list) -> CampaignOut:
         published_at=c.published_at,
         total_tasks=len(tasks),
         completed_tasks=sum(1 for t in tasks if t.status == TaskStatus.completed),
-        pending_tasks=sum(1 for t in tasks if t.status in (TaskStatus.available, TaskStatus.pending_review)),
+        pending_tasks=sum(1 for t in tasks if t.status == TaskStatus.available),
+        pending_review_tasks=sum(1 for t in tasks if t.status == TaskStatus.pending_review),
         in_progress_tasks=sum(1 for t in tasks if t.status == TaskStatus.in_progress),
         rejected_tasks=sum(1 for t in tasks if t.status == TaskStatus.rejected),
     )

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Eye, Send } from 'lucide-react';
+import { Plus, Eye, Send, Clock } from 'lucide-react';
 import { campaignsApi, Campaign } from '../api/campaigns';
 
 export function CampaignsPage() {
@@ -117,12 +117,27 @@ function CampaignCard({
         </span>
       </div>
 
+      {c.pending_review_tasks > 0 && (
+        <button
+          onClick={onView}
+          className="w-full mb-4 flex items-center gap-2.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-3.5 py-2.5 text-sm font-medium hover:bg-amber-100 transition-colors"
+        >
+          <Clock className="w-4 h-4 shrink-0 text-amber-500" />
+          <span>
+            {c.pending_review_tasks === 1
+              ? '1 фото ожидает вашей проверки'
+              : `${c.pending_review_tasks} фото ожидают вашей проверки`}
+          </span>
+          <span className="ml-auto text-amber-500">→</span>
+        </button>
+      )}
+
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-center">
         {[
           { label: 'Всего', value: c.total_tasks, cls: 'bg-gray-50' },
           { label: 'Выполнено', value: c.completed_tasks, cls: 'bg-green-50 text-green-700' },
-          { label: 'В работе', value: c.in_progress_tasks + c.pending_tasks, cls: 'bg-yellow-50 text-yellow-700' },
-          { label: 'Осталось', value: c.pending_tasks, cls: 'bg-orange-50 text-orange-700' },
+          { label: 'На проверке', value: c.pending_review_tasks, cls: c.pending_review_tasks > 0 ? 'bg-amber-50 text-amber-700' : 'bg-gray-50 text-gray-400' },
+          { label: 'Осталось', value: c.pending_tasks + c.in_progress_tasks, cls: 'bg-orange-50 text-orange-700' },
         ].map(({ label, value, cls }) => (
           <div key={label} className={`${cls} rounded-lg p-2`}>
             <div className="text-xl font-bold">{value}</div>

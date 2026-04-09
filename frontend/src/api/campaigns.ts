@@ -13,6 +13,7 @@ export interface Campaign {
   total_tasks: number;
   completed_tasks: number;
   pending_tasks: number;
+  pending_review_tasks: number;
   in_progress_tasks: number;
   rejected_tasks: number;
 }
